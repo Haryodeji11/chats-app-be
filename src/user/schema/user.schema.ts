@@ -17,6 +17,8 @@ export class User {
 
   @Prop({ default: () => Date.now() })
   createdAt: Date;
+  @Prop({ required: true })
+  isUserOnline: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
