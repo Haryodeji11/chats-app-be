@@ -53,4 +53,25 @@ export class AuthService {
     }
     throw new UnauthorizedException('Invalid login credential');
   }
+
+  async forgotPassword(req: { email: string }): Promise<any> {
+    const user = await this.userService.findOne(req?.email);
+    if (user) {
+      return 'password reset link sent to your email';
+    }
+    throw new UnauthorizedException('Invalid email');
+  }
+  async resetPassword(token: string, newPassword: string): Promise<any> {
+    const decoded = this.jwtService.verify(token);
+    const user = await this.userService.finduserById(decoded.sub);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    await this.userService.updatePassword(user.userId.toString(), hashPassword);
+
+    return 'Password has been successfully reset';
+  }
 }

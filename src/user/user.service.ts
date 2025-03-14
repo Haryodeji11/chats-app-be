@@ -25,11 +25,19 @@ export class UserService {
     return this.userModel.findOne({ email });
   }
 
+  async finduserById(userId: string): Promise<User> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new UnauthorizedException(`User with ID ${userId} not found`);
+    }
+    return user;
+  }
+
   async getallUser(): Promise<User[]> {
     return this.userModel.find().exec();
   }
 
-  async getOneUser(userId: string): Promise<User> {
+  async getOneUser(userId: any): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new UnauthorizedException(`User with ID ${userId} not found`);
@@ -51,5 +59,14 @@ export class UserService {
       throw new UnauthorizedException(`User with ID ${userId} not found`);
     }
     return user.isUserOnline;
+  }
+
+  async updatePassword(userId: string, password: string): Promise<User> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new UnauthorizedException(`User with ID ${userId} not found`);
+    }
+    user.password = password;
+    return user.save();
   }
 }

@@ -37,4 +37,9 @@ export class AuthController {
     console.log(req, 'profile request');
     return req.user;
   }
+
+  @Get('forgot-password')
+  async forgotPassword(@Body() body: { email: string }) {
+    return this.authService.forgotPassword(body);
+  }
 }
